@@ -1,0 +1,105 @@
+<nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
+  <div class="scrollbar-inner">
+    <!-- Brand -->
+    <div class="sidenav-header align-items-center">
+      <a class="navbar-brand" href="/">
+        <h1 class="text-primary h1" style="font-weight: bold;">Warehouse</h1>
+        {% comment %} <img src="/static/assets/img/brand/blue.png" class="navbar-brand-img" alt="Argon Design - Jinja Template Logo." /> {% endcomment %}
+      </a>
+    </div>
+    <div class="navbar-inner">
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if 'profile' in segment %}{% endif %}" href="{% url 'index' %}">
+              <i class="fas fa-home text-primary"></i>
+              <span class="nav-link-text">Home</span>
+            </a>
+          </li>
+        </ul>
+        <!-- Nav items -->
+        <h6 class="navbar-heading p-0 text-muted"><span class="docs-normal"><small>Users</small></span></h6>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if '/users/' == request.path %}{% endif %}" href="{% url 'users' %}">
+              {% comment %} <i class="ni ni-tv-2 text-primary"></i> {% endcomment %}
+              <i class="fas fa-users text-primary"></i>
+              <span class="nav-link-text">Users</span>
+            </a>
+          </li>
+        </ul>
+        <!-- Heading -->
+        <h6 class="navbar-heading p-0 text-muted"><span class="docs-normal"><small>Employee</small></span></h6>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if '/item/history/employee/' == request.path %}{% endif %}" href="{% url 'employee.history' %}">
+              {% comment %} <i class="ni ni-tv-2 text-primary"></i> {% endcomment %}
+              <i class="fas fa-history text-primary"></i>
+              <span class="nav-link-text">History Employee</span>
+            </a>
+          </li>
+        </ul>
+        <h6 class="navbar-heading p-0 text-muted"><span class="docs-normal"><small>Devices</small></span></h6>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if '/catogry/' == request.path %}{% endif %}" href="{% url 'catogry.index' %}">
+              {% comment %} <i class="ni ni-tv-2 text-primary"></i> {% endcomment %}
+              <i class="fas fa-layer-group text-primary"></i>
+              <span class="nav-link-text">Categories</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if '/item/' == request.path %}{% endif %}" href="{% url 'item.index' %}">
+              {% comment %} <i class="ni ni-planet"></i> {% endcomment %}
+              <i class="fas fa-laptop text-primary"></i>
+              <span class="nav-link-text">Decvices</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if '/item/create' == request.path %}{% endif %}" href="{% url 'Item.create' %}">
+              <i class="fas fa-plus text-primary"></i>
+              <span class="nav-link-text">Add Decvice</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">
+              <i class="ni ni-pin-3 text-primary"></i>
+              <span class="nav-link-text">Gevin Device</span>
+            </a>
+            <ul class="navbar-nav pl-5">
+              <li class="nav-item">
+                <a class="nav-link {% if '/item/gevin' == request.path %}{% endif %}" href="{% url 'item.gevin' %}"><span class="nav-link-text"><small><i class="fas fa-laptop"></i> personal device</small></span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if '/item/gevin-office' == request.path %}{% endif %}" href="{% url 'gevin.office' %}"><span class="nav-link-text"><small><i class="fas fa-laptop"></i> office device</small></span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if '/item/spare-part' == request.path %}{% endif %}" href="{% url 'spare_parts.index' %}">
+              {% comment %} <i class="ni ni-planet"></i> {% endcomment %}
+              <i class="fas fa-laptop text-primary"></i>
+              <span class="nav-link-text">Spare Parts</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if '/item/create/spare-part' == request.path %}{% endif %}" href="{% url 'Item.create.sparepart' %}">
+              <i class="fab fa-squarespace text-primary"></i>
+              <span class="nav-link-text">Add Spare Parts</span>
+            </a>
+          </li>
+        </ul>
+        <h6 class="navbar-heading p-0 text-muted"><span class="docs-normal"><small>Departments</small></span></h6>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link {% if '/item/department/' == request.path %}{% endif %}" href="{% url 'department.index' %}">
+              <i class="far fa-building text-primary"></i>
+              <span class="nav-link-text">Departments</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

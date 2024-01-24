@@ -1,0 +1,528 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  Item
+{% endblock %}
+
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Devices</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">Devices</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Devices table</h3>
+            <div class="">
+              <button class="btn btn-primary" id="reuten-btn">return</button>
+              <a href="{% url 'item.index' %}" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i></a>
+            </div>
+          </div>
+          <!-- Light table -->
+          <div class="card-body">
+            <form action="" class="row">
+              <input type="hidden" name="search" value="1" />
+              <div class="col-11 row p-2">
+                <div class="col-md-3">
+                  <label>Service tag</label>
+                  <input type="text" name="service_tag" class="form-control" placeholder="Service tag" value="{{ request.GET.service_tag }}" />
+                </div>
+                <div class="col-md-3">
+                  <label>Catogry</label>
+                  {% comment %} <input type="text" name="service_tag" class="form-control" placeholder="Catogry" /> {% endcomment %}
+                  <select name="catogry" id="catogry" class="w-100">
+                    <option value="">.......</option>
+                    {% for val in catogry %}
+                      <option value="{{ val.id }}">{{ val.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>Model</label>
+                  <select name="model" class="w-100" id="model">
+                    <option value="">.......</option>
+                    {% for val in model %}
+                      <option value="{{ val.id }}">{{ val.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>status</label>
+                  <select name="status" id="status" class="w-100">
+                    <option value="">.......</option>
+                    {% for key, val in status.items %}
+                      <option value="{{ key }}">{{ val }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <button class="btn btn-primary mt-4">search</button>
+              </div>
+            </form>
+            <div style="overflow-x: scroll;min-height: 400px;">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th>
+                      <input type="checkbox" class="checked_all" />
+                    </th>
+                    <th scope="col" class="sort" data-sort="name">Service Tag</th>
+                    <th scope="col" class="sort" data-sort="budget">Model</th>
+                    <th scope="col" class="sort" data-sort="status">Catogry</th>
+                    <th scope="col" class="sort" data-sort="status">Store</th>
+
+                    <th scope="col" class="sort" data-sort="completion">Supplier</th>
+                    <th scope="col" class="sort" data-sort="completion">Purchase date</th>
+                    <th scope="col" class="sort" data-sort="completion">status</th>
+                    <th>Type</th>
+                    <th scope="col" class="sort" data-sort="completion">control</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for val in devices %}
+                    <tr>
+                      <td>
+                        <input type="checkbox" name="item[]" value="{{ val.id }}" class="item-check-box" />
+                      </td>
+                      <th scope="row">
+                        <div class="media align-items-center">
+                          <div class="media-body">
+                            <a href="{% url 'history' val.id %}"><span class="name mb-0 text-sm">{{ val.service_tag }}</span></a>
+                          </div>
+                        </div>
+                      </th>
+                      <td class="budget">{{ val.modal.name }}</td>
+                      <td>
+                        <span class="status">{{ val.catogry.name }}</span>
+                      </td>
+                      <td class="budget">{{ val.store.name }}</td>
+
+                      <td class="budget">{{ val.supplier }}</td>
+                      <td class="budget">{{ val.purchase_date }}</td>
+                      <td>
+                        <span class="badge badge-dot mr-4">
+                          {% if val.status == 1 %}
+                            <i class="bg-success"></i>
+                          {% elif val.status == 2 %}
+                            <i class="bg-info"></i>
+                          {% elif val.status == 3 %}
+                            <i class="bg-warning"></i>
+                          {% elif val.status == 4 %}
+                            <i class="bg-danger"></i>
+                          {% elif val.status == 5 %}
+                            <i class="bg-gray"></i>
+                          {% endif %}
+                          <span class="status">{{ val.status_name }}</span>
+                        </span>
+                      </td>
+                      <td>{{ val.type_device }}</td>
+                      {% comment %}
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="completion mr-2">60%</span>
+                          <div>
+                            <div class="progress">
+                              <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      {% endcomment %}
+                      <td class="text-right">
+                        <div class="dropdown">
+                          <a class="btn btn-sm btn-icon-only text-light" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                            {% if val.status == 1 %}
+                              {% if val.type_device == 'Personal' %}
+                                {% comment %} <button class="dropdown-item Gevin-btn" data-id="{{ val.id }}" data-toggle="modal" data-target="#gevin_modal">Gevin the Device</button> {% endcomment %}
+                              {% endif %}
+
+                              <a class="dropdown-item" href="{% url 'expired' val.id %}">Make it Expired</a>
+                              <button class="dropdown-item Service-btn" data-id="{{ val.id }}">send it to Serving</button>
+                            {% elif val.status == 2 %}
+                              {% for emp in val.emp_device.all %}
+                                {% if emp.status %}
+                                  <button class="dropdown-item receive-btn" data-type="Personal" data-id="{{ emp.id }}">reseving</button>
+                                {% endif %}
+                              {% endfor %}
+
+                              {% for depar in val.device_depart.all %}
+                                {% if depar.status %}
+                                  <button class="dropdown-item receive-btn" data-type="office" data-id="{{ depar.id }}">reseving</button>
+                                {% endif %}
+                              {% endfor %}
+                            {% elif val.status == 3 %}
+                              <button class="dropdown-item recive-Service-btn" data-id="{{ val.id }}">reseving</button>
+                            {% elif val.status == 5 %}
+                              <a class="dropdown-item" href="{% url 'expired' val.id %}">Make it Expired</a>
+                              <button class="dropdown-item Service-btn" data-id="{{ val.id }}">send it to Serving</button>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-end mb-0">
+                {% if devices.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="{{ request.get_full_path }}{% if request.GET.search %}{% endif %}page={{ devices.previous_page_number }}" tabindex="-1">
+                      <i class="fas fa-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                {% endif %}
+                {% for i in range %}
+                  <li class="page-item {% if i == devices.number %}{% endif %}">
+                    <a class="page-link" href="{{ request.get_full_path }}{% if request.GET.search %}{% endif %}page={{ i }}">{{ i }}</a>
+                  </li>
+                {% endfor %}
+                {% if devices.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="{{ request.get_full_path }}{% if request.GET.search %}{% endif %}page={{ devices.next_page_number }}">
+                      <i class="fas fa-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Dark table -->
+  </div>
+
+  <div class="modal fade" id="gevin_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="service_tag"></h5>
+          <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-danger" id="error-gevin"></div>
+          <form id="form-gevin">
+            {% csrf_token %}
+            <div class="form-group">
+              <select name="employee" style="width: 100%;">
+                <option disabled selected>Choice ...</option>
+                {% for val in employee %}
+                  <option value="{{ val.id }}">{{ val.name }} - {{ val.zalaf_id }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <input type="hidden" value="" name="device" id="device_id" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+          <button type="button" id="save-gevin" class="btn btn-warning">save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="receive_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">receive</h5>
+          <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-danger" id="error-form"></div>
+          <form id="form-resive">
+            {% csrf_token %}
+            {% for field in historyForm %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}">
+                  {{ field.label }} {% if field.is_required %}
+                    <span class="text-danger">*</span>
+                  {% endif %}
+                </label>
+                {{ field }}
+              </div>
+            {% endfor %}
+            <input type="hidden" value="1" name="type" />
+            <input type="hidden" id="id-emp-device" />
+            <input type="hidden" id="type_device" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+          <button type="button" id="save-recive" class="btn btn-warning">save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your Django template file, e.g., your_template.html -->
+  <div class="modal fade" id="send_servirce" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">send Service</h5>
+          <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-danger" id="error-form-servcing"></div>
+          <form id="form-serviceing">
+            {% csrf_token %}
+
+            <!-- Store -->
+            <label for="id_store">Maintenance shop name:</label>
+            <input type="text" id="id_store" class="form-control" name="store" required />
+
+            <br />
+
+            <!-- Details -->
+            <label for="id_details">Details:</label>
+            <textarea id="id_details" name="details" rows="5" class="form-control" required></textarea>
+
+            <!-- Submit button -->
+            <input type="hidden" class="idempdevice" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+          <button type="button" id="save-servecing-btn" class="btn btn-warning">save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="recive_servirce" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">recive Service</h5>
+          <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-danger" id="error-recive-servcing"></div>
+          <form id="form-serviceing-recive">
+            {% csrf_token %}
+            <label>Status Of Device</label>
+            <select name="status" class="form-control" required="" id="id_status" style="width: 100%;">
+              <option value="" selected="">---------</option>
+
+              <option value="1">Working</option>
+
+              <option value="3">Expired</option>
+
+              <option value="4">borken</option>
+            </select>
+
+            <br />
+
+            <!-- Details -->
+            <label for="id_details">Details:</label>
+            <textarea id="id_details" name="details" rows="5" class="form-control" required></textarea>
+
+            <!-- Submit button -->
+            <input type="hidden" class="idempdevice" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+          <button type="button" id="recive-servecing-btn" class="btn btn-warning">save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function () {
+      $('#send-data').click(function (e) {
+        $('#error-form').text('')
+        e.preventDefault()
+        const formData = new FormData(document.getElementById('form-add'))
+        axios.post("{% url 'catogry.store' %}", formData).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            toastr.success(res.data.message)
+            document.getElementById('form-add').reset()
+          } else {
+            var error = res.data.message
+            for (const mssg in error) {
+              for (const index of error[mssg]) {
+                $('#error-form').append(mssg + ' ' + index + '<br>')
+              }
+            }
+          }
+        })
+      })
+      $('.Gevin-btn').click(function () {
+        axios.get('/item/get-device/' + $(this).data('id')).then((res) => {
+          console.log(res)
+          var data = res.data
+          $('#service_tag').text(data.service_tag + ' - ' + data.modal.name + ' - ' + data.catogry.name)
+          $('#device_id').val(data.id)
+        })
+      })
+      $('#save-gevin').click(function () {
+        $('#error-gevin').text('')
+        axios.post('/item/store_data', $('#form-gevin').serialize()).then((res) => {
+          response = res.data
+          if (response.status) {
+            toastr.success(response.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-gevin').text(response.message)
+          }
+        })
+      })
+    
+      $('.close-add').click(function () {
+        location.reload()
+      })
+    
+      $('#form-add').submit(function (e) {
+        e.preventDefault()
+      })
+    
+      $('select').select2()
+    
+      // ====================== Recive Device From Employee ============================
+    
+      $(document).on('click', '.receive-btn', function () {
+        $('#receive_modal').modal('show')
+        $('#id-emp-device').val($(this).data('id'))
+        $('#type_device').val($(this).data('type'))
+      })
+    
+      $('.close-add').click(function () {
+        $('#id-emp-device').val('')
+        $('#type_device').val('')
+      })
+    
+      $('#save-recive').click(function () {
+        $('#error-form').text('')
+        axios.post(`/item/recive/${$('#id-emp-device').val()}/${$('#type_device').val()}`, $('#form-resive').serialize()).then((res) => {
+          var data_recive = res.data
+          if (data_recive.status) {
+            toastr.success(data_recive.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-form').text(data_recive.message)
+          }
+        })
+      })
+      // =================== Send Device To Serviceing ================
+      $(document).on('click', '.Service-btn', function () {
+        $('#send_servirce').modal('show')
+        $('.idempdevice').val($(this).data('id'))
+      })
+    
+      $('.close-add').click(function () {
+        $('.idempdevice').val('')
+      })
+    
+      $('#save-servecing-btn').click(function () {
+        $('#error-form-servcing').text('')
+        axios.post(`/item/send-to-servecing/${$('.idempdevice').val()}`, $('#form-serviceing').serialize()).then((res) => {
+          var data_recive = res.data
+          if (data_recive.status) {
+            toastr.success(data_recive.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-form-servcing').text(data_recive.message)
+          }
+        })
+      })
+    
+      // ===============Recive Device From Serviceing====================
+    
+      $(document).on('click', '.recive-Service-btn', function () {
+        $('#recive_servirce').modal('show')
+        $('.idempdevice').val($(this).data('id'))
+      })
+    
+      $('.close-add').click(function () {
+        $('.idempdevice').val('')
+      })
+    
+      $('#recive-servecing-btn').click(function () {
+        $('#error-recive-servcing').text('')
+        axios.post(`/item/recive-from-servecing/${$('.idempdevice').val()}`, $('#form-serviceing-recive').serialize()).then((res) => {
+          var data_recive = res.data
+          if (data_recive.status) {
+            toastr.success(data_recive.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-recive-servcing').text(data_recive.message)
+          }
+        })
+      })
+    
+      $('.checked_all').change(function () {
+        if ($(this).is(':checked')) {
+          $('.item-check-box').attr('checked', 'checked')
+        } else {
+          $('.item-check-box').removeAttr('checked')
+        }
+      })
+      
+      $('#reuten-btn').click(function () {
+        var checked_item = []
+        $('.item-check-box:checked').each(function () {
+          checked_item.push($(this).val())
+        })
+        axios.get("{% url 'returen.device' %}",
+        {
+          params:{
+          item:checked_item 
+        }
+        }).then((res)=>{
+          console.log(res)
+          toastr.success(res.data)
+          setInterval(()=>{
+            location.reload()
+          },500)
+        })
+      })
+    })
+  </script>
+{% endblock %}

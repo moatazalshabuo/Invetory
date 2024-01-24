@@ -1,0 +1,421 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+  الاصناف
+{% endblock %}
+{% block content %}
+ <div class="header bg-primary pb-2">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-2">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Catogry</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">catogry</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt-md-6">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Gevin Devices to user</h3>
+          </div>
+          <!-- Light table -->
+          <div class="card-body">
+            <div class="text-danger" id="error-gevin"></div>
+            <form id="form-gevin">
+                {% csrf_token %}
+              <div class="form-group">
+                <label>Employee ID</label>
+                <select id="employee_id" class="select w-100" name="employee" required>
+                    <option disabled selected>Choice</option>
+                                        
+                </select>
+              </div>
+           
+              <div class="form-group">
+                <label>Servec Tags</label>
+                <select id="Device_id" name="device" class="w-100" multiple required>
+                    {% for val in device %}
+                        <option value="{{ val.id }}" {% if val.status != 1 %} disabled {% endif %}>
+                            {{ val.service_tag }} 
+                            <small class="">
+                                {% if val.status != 1 %} {{ val.status_name }} {% endif %}
+                            </small>
+                        </option>
+                    {% endfor %}
+                </select>
+              </div>
+              <button class="btn btn-danger" id="save" type="button"> Save </button>
+            </form>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0" id="name"></h3>
+              </div>
+              <div class="col-4 text-right">
+                <a href="#!" class="btn btn-sm btn-primary" id="id"></a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush" >
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col" class="sort" data-sort="name">Service Tag</th>
+                      <th scope="col" class="sort" data-sort="budget">Model</th>
+                      <th scope="col" class="sort" data-sort="status">Catogry</th>
+                      <th scope="col" class="sort" data-sort="status">Date Gevin</th>
+                      <th scope="col" class="sort" data-sort="completion">control </th>
+                    </tr>
+                  </thead>
+                  <tbody class="list" id="list-device">
+                    
+                  </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="receive_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">receive</h5>
+            <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-danger" id="error-form"></div>
+            <form id="form-resive">
+              {% csrf_token %} 
+              {% for field in historyForm %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}">
+                    {{ field.label }} {% if field.is_required %}
+                      <span class="text-danger">*</span>
+                    {% endif %}
+                  </label>
+                  {{ field }}
+                </div>
+              {% endfor %}
+              <input type="hidden" value="1" name="type">
+              <input type="hidden" id="id-emp-device">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+            <button type="button" id="save-recive" class="btn btn-warning">receive</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Page content -->
+{% comment %} <div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2">
+      <div class="card card-profile">
+        <img src="/static/assets/img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="#">
+                <img src="/static/assets/img/theme/team-4.jpg" class="rounded-circle">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+          <div class="d-flex justify-content-between">
+            <a href="#" class="btn btn-sm btn-info  mr-4 ">Connect</a>
+            <a href="#" class="btn btn-sm btn-default float-right">Message</a>
+          </div>
+        </div>
+        <div class="card-body pt-0">
+          <div class="row">
+            <div class="col">
+              <div class="card-profile-stats d-flex justify-content-center">
+                <div>
+                  <span class="heading">22</span>
+                  <span class="description">Friends</span>
+                </div>
+                <div>
+                  <span class="heading">10</span>
+                  <span class="description">Photos</span>
+                </div>
+                <div>
+                  <span class="heading">89</span>
+                  <span class="description">Comments</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center">
+            <h5 class="h3">
+              {{ request.user.username }}
+            </h5>
+            <div class="h5 font-weight-300">
+              {{ request.user.email }}
+            </div>
+            <div class="h5 mt-4">
+              <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
+            </div>
+            <div>
+              <i class="ni education_hat mr-2"></i>University of Computer Science
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Edit profile </h3>
+            </div>
+            <div class="col-4 text-right">
+              <a href="#!" class="btn btn-sm btn-primary">Settings</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form>
+            <h6 class="heading-small text-muted mb-4">User information</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-username">Username</label>
+                    <input type="text" id="input-username" class="form-control" placeholder="Username" value="{{ request.user.username }}">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-email">Email address</label>
+                    <input type="email" id="input-email" class="form-control" placeholder="{{ request.user.email }}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-first-name">First name</label>
+                    <input type="text" id="input-first-name" class="form-control" placeholder="First name" value="Lucky">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-last-name">Last name</label>
+                    <input type="text" id="input-last-name" class="form-control" placeholder="Last name" value="Jesse">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <!-- Address -->
+            <h6 class="heading-small text-muted mb-4">Contact information</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-address">Address</label>
+                    <input id="input-address" class="form-control" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" type="text">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-city">City</label>
+                    <input type="text" id="input-city" class="form-control" placeholder="City" value="New York">
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-country">Country</label>
+                    <input type="text" id="input-country" class="form-control" placeholder="Country" value="United States">
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <label class="form-control-label" for="input-country">Postal code</label>
+                    <input type="number" id="input-postal-code" class="form-control" placeholder="Postal code">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <!-- Description -->
+            <h6 class="heading-small text-muted mb-4">About me</h6>
+            <div class="pl-lg-4">
+              <div class="form-group">
+                <label class="form-control-label">About Me</label>
+                <textarea rows="4" class="form-control" placeholder="A few words about you ...">A beautiful Dashboard for Bootstrap 4. It is Free and Open Source.</textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> {% endcomment %}
+
+ 
+
+</div>
+{% endblock %} 
+{% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function(){
+      $(".select").select2()
+      function getDevices(){
+        var array = []
+        axios.get('/item/get-devices/').then((res)=>{
+          $("#Device_id").html('')
+          var devices = res.data.devices
+          var i = 0
+          for(let val in devices){
+            var desbled = false
+            var status = ''
+            if(devices[val].status != 1){
+              desbled = true
+              status = devices[val].status_name
+            }
+            array.push({ id: devices[val].id,
+              text: devices[val].service_tag + " " + status,
+              disabled:desbled
+            })
+             i++
+          }
+          $("#Device_id").select2(
+            {
+              data:array,
+              allowClear: true
+            })
+        })
+      }
+      getDevices()
+      function get_data(id){
+        $("#error-gevin").text()
+        axios.get('/item/emp_data/'+id).then((res)=>{
+            var emp = res.data.employee 
+            var emp_device = res.data.emoloyee_device
+            $('#id').text(emp.state)
+            $("#name").text(emp.displayName)
+            var html = ''
+            for(let data of emp_device){
+                html += `<tr>
+                    <td>${data.device.service_tag}</td>
+                    <td>${data.device.catogry.name}</td>
+                    <td>${data.device.modal.name}</td>
+                    <td>${data.formatted_created_at}</td>
+                    <td><button class="btn btn-danger btn-sm receive-btn" data-id="${data.id}">receive</button></td>
+                </tr>`
+            }       
+            $('#list-device').html(html)
+            $(".overlay").addClass('d-none')
+        }).catch((res)=>{
+          $("#error-gevin").text("Please select the employee whose job title appears ")
+          $(".overlay").addClass('d-none')
+        })
+        
+      }
+      $('#employee_id').change(function(){
+        $(".overlay").removeClass("d-none")
+          get_data($(this).val())
+      })
+      $("#save").click(function(){
+        $(".overlay").removeClass("d-none")
+          $('#error-gevin').text('')
+          axios.post('/item/store_data',$("#form-gevin").serialize()).then((res)=>{
+              response = res.data
+            
+              if(response.status){
+                  get_data($('#employee_id').val())
+                  getDevices()
+                  toastr.success(response.message)
+              }else{
+                  $('#error-gevin').text(response.message)
+              }
+          })
+      })
+      $(document).on('click',".receive-btn",function(){
+        $('#receive_modal').modal('show')
+        $("#id-emp-device").val($(this).data('id'))
+      })
+      $(".close-add").click(function(){
+        $("#id-emp-device").val('')
+      })
+      $("#save-recive").click(function(){
+        $("#error-form").text('')
+        $(".overlay").removeClass("d-none")
+        axios.post(`/item/recive/${$("#id-emp-device").val()}/Personal`,$("#form-resive").serialize()).then((res)=>{
+          var data_recive = res.data
+          if(data_recive.status){
+            get_data($('#employee_id').val())
+            toastr.success(data_recive.message)
+            document.getElementById('form-resive').reset()
+            $(".overlay").addClass("d-none")
+          }else{
+            $("#error-form").text(data_recive.message)
+          }
+          getDevices()
+        })
+      })
+      $('#employee_id').select2({
+        tags: true,
+        multiple: false,
+        tokenSeparators: [','],
+        minimumInputLength: 1,
+        minimumResultsForSearch: 10,
+        ajax: {
+          url: "/item/test-mail",
+          dataType: 'json',
+          type: 'GET',
+          data: function (params) {
+            var queryParameters = {
+              name: params.term
+            }
+            return queryParameters
+          },
+          processResults: function (data) {
+            console.log(data)
+            return {
+              results: $.map(data, function (item) {
+                return {
+                  text: item.displayName + " " +item.state,
+                  id: item.id
+                }
+              })
+            }
+          }
+        }
+      })
+    })
+  </script>
+{% endblock %}

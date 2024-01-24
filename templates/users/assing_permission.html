@@ -1,0 +1,82 @@
+{% extends "layouts/base.html" %} {% block title %} Users {% endblock title %}
+{% load static %}
+{% block content %}
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Users</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item active"><a href="#">Users</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt-md-6">
+  {% if messages %}
+  <ul class="messages m-auto">
+    {% for message in messages %}
+      <li {% if message.tags == 'error' %} class="alert alert-danger" {% else %} class="alert alert-success" {% endif %}>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="row">
+    <div class="col-md-6 m-auto">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0 d-flex justify-content-between">
+          <h3 class="mb-0">set Permission</h3>
+          {% if message %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+            <form action="" method="POST">
+                {% csrf_token %}
+            <!-- Light table -->
+            <div class="form-group text-center">
+                <div class="m-3 ">
+                    <img src="{% static 'assets/img/user_149071.png' %}" class="w-25 m-auto">
+                </div>
+              <div class="m-3"><strong>Name : {{ user.username }}</strong></div>
+              
+              <div class="m-3">
+                <h3>user's Permission</h3>
+                {% for per in user.user_permissions.all %}
+                    <span class="badge bg-primary text-white">{{ per.name }}</span>
+                {% endfor %}
+              </div>
+            </div>
+               
+            <!-- Card footer -->
+              <div>
+                <label>assing permission<br /></label>
+                <select multiple class="select2 w-100" name="permission">
+                  {% comment %} <option >Choice</option> {% endcomment %}
+                  {% for val in permission %}
+                    <option {% if val in user.user_permissions.all %} selected {% endif %} value="{{ val.id }}">{{ val.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+                <button type="submit" class="btn btn-primary my-3">save</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %} {% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+$('select').select2()
+
+</script>
+{% endblock javascripts %}

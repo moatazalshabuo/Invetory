@@ -1,0 +1,174 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}
+  Employee history
+{% endblock %}
+{% block content %}
+  <div class="container-fluid mt-6">
+    <div class="row">
+      <div class="col-md-12">
+        <form method="POST" action="">
+          <div class="row">
+            {% csrf_token %}
+            <div class="col-md-6">  
+              <div class="form-group">
+                <label>Employee ID</label>
+                <select id="employee_id" class="select w-100" name="id" required>
+                    <option disabled selected>Choice</option>             
+                </select>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-primary" type="submit">search</button>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-xl-4 order-xl-2">
+        <div class="card card-profile">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image"></div>
+            </div>
+          </div>
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+            <div class="d-flex justify-content-between">
+              {% comment %} {% if device.status == 1 %}
+                <a href="#" class="btn btn-sm btn-success mr-4">{{ device.status_name }}</a>
+              {% elif device.status == 2 %}
+                <i class="bg-info"></i>
+                <a href="#" class="btn btn-sm btn-info mr-4">{{ device.status_name }}</a>
+              {% elif device.status == 3 %}
+                <a href="#" class="btn btn-sm btn-warning mr-4">{{ device.status_name }}</a>
+              {% elif device.status == 4 %}
+                <a href="#" class="btn btn-sm btn-danger mr-4">{{ device.status_name }}</a>
+              {% endif %} {% endcomment %}
+              <a href="#" class="btn btn-sm btn-primary mr-4">Zallaf Id : {{ employee.state }} </a>
+            </div>
+          </div>
+          <div class="card-body pt-0 text-center">
+            <div class="m-3 ">
+              <img src="{% static 'assets/img/user_149071.png' %}" class="w-25 m-auto">
+            </div>
+            <div class="text-center">
+              <h5 class="h3 p-3">Name : {{ employee.displayName }}</h5>
+            </div>
+            <div class="text-center">
+              <h5 class="h3 p-3">Email : {{ employee.userPrincipalName }}</h5>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">History</h3>
+              </div>
+              <div class="col-4 text-right">
+                
+              </div>
+            </div>
+          </div>
+          <div class="card-body" >
+            <div class="table-responsive" style="max-height: 500px; overflow-y: scroll;">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th>service tag</th>
+                    <th>modal - catogry</th>
+                    <th scope="col" class="sort" data-sort="name">Device Status</th>
+                    <th scope="col" class="sort" data-sort="budget">type</th>
+                    <th scope="col" class="sort" data-sort="status">employee /<br /> departments /<br /> Maintenance shop</th>
+                    <th scope="col">Users</th>
+                    <th scope="col" class="sort" data-sort="completion">time</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for val in history %}
+                    <tr>
+                      <td>{{ val.device.service_tag }}</td>
+                      <td>{{ val.device.catogry }} - {{ val.device.modal }}</td>
+                      <th scope="row">
+                        <span class="badge badge-dot mr-4">
+                          <i class="bg-warning"></i>
+                          <span class="status">{{ val.get_status_display }}</span>
+                        </span>
+                      </th>
+                      <td class="budget">
+                        {% if val.is_from %}
+                          Receive from
+                        {% elif val.is_to %}
+                          Dlivery to
+                        {% else %}
+                          Change Status
+                        {% endif %}
+                        {{ val.get_type_display }}
+                      </td>
+                      <td>
+                        {% if val.type == '1' %}
+                          {{ val.employeeData.displayName }}
+                        {% elif val.type == '2' %}
+                          {{ val.store }}
+                        {% elif val.type == '4' %}
+                          {{ val.departDevice.departments.name }}
+                          {% if val.status %}
+                            ({% for devi in val.departDevice.office.all %}
+                              {{ devi.name }} ,
+                            {% endfor %})
+                          {% endif %}
+                        {% else %}
+                          /
+                        {% endif %}
+                      </td>
+                      <td>{{ val.created_by.username }}</td>
+                      <td>{{ val.created_at }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block javascripts %}
+<script>
+  $(function(){
+    $('#employee_id').select2({
+      tags: true,
+      multiple: false,
+      tokenSeparators: [','],
+      minimumInputLength: 1,
+      minimumResultsForSearch: 10,
+      ajax: {
+        url: "/item/test-mail",
+        dataType: 'json',
+        type: 'GET',
+        data: function (params) {
+          var queryParameters = {
+            name: params.term
+          }
+          return queryParameters
+        },
+        processResults: function (data) {
+          console.log(data)
+          return {
+            results: $.map(data, function (item) {
+              return {
+                text: item.displayName + " " +item.state,
+                id: item.id
+              }
+            })
+          }
+        }
+      }
+    })
+  })
+</script>
+{% endblock %}

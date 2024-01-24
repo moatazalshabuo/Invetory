@@ -1,0 +1,106 @@
+{% extends 'layouts/base.html' %} {% block title %}
+  Email CC
+{% endblock %}
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Email CC</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">Email CC</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt-md-6">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="alert {% if message.tags == 'error' %}
+
+            {% endif %}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <form action="" method="POST">
+              {% csrf_token %}
+              <label>Choice Employee</label>
+              <select id="employee_id" class="select w-100" name="id" required>
+                <option disabled selected>Choice</option>
+              </select>
+              <button type="submit" class="btn btn-primary w-100 my-3">submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>CC from Message To</h3>
+            </div>
+          <div class="card-body">
+            <ul class="list-group">
+              {% for email in emails %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>{{ email.email }}</span>
+                  <a href="{% url 'email.delete' email.id %}"><i class="fas fa-trash text-danger"></i></a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %} {% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function () {
+      $('#employee_id').select2({
+        tags: true,
+        multiple: false,
+        tokenSeparators: [','],
+        minimumInputLength: 1,
+        minimumResultsForSearch: 10,
+        ajax: {
+          url: '/item/test-mail',
+          dataType: 'json',
+          type: 'GET',
+          data: function (params) {
+            var queryParameters = {
+              name: params.term
+            }
+            return queryParameters
+          },
+          processResults: function (data) {
+            console.log(data)
+            return {
+              results: $.map(data, function (item) {
+                return {
+                  text: item.displayName + ' ' + item.state,
+                  id: item.id
+                }
+              })
+            }
+          }
+        }
+      })
+    })
+  </script>
+{% endblock %}

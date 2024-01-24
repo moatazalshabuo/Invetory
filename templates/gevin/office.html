@@ -1,0 +1,116 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+  Give Device office
+{% endblock %}
+{% block content %}
+ <div class="header bg-primary pb-2">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-2">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Catogry</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">catogry</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt-md-6">
+    <div class="row">
+      <div class="col-md-5 m-auto">
+        {% if message %}
+        <div class="alert alert-success">
+            {{  message }}
+        </div>
+        {% endif %}
+        
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Gevin Devices to user</h3>
+          </div>
+          <!-- Light table -->
+          <div class="card-body">
+           {% if error %}
+           <div class="alert alert-danger" id="">
+            {{ error }}     
+        </div>
+           {% endif %}
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Servec Tags <span class="text-danger">*</span></label>
+                    <select id="Device_id" name="device" class="select w-100" required>
+                        <option disabled selected>Choice</option>
+                        {% for val in devices %}
+                            <option value="{{ val.id }}" 
+                            {% if val.status != 1 %} disabled {% endif %}>
+                                {{ val.service_tag }} 
+                                <small class="">
+                                    {% if val.status != 1 %} {{ val.status_name }} {% endif %}
+                                </small>
+                            </option>
+                        {% endfor %}
+                    </select>
+                    
+                  </div>
+                <div class="form-group">
+                    <label>Department <span class="text-danger">*</span></label>
+                    <select id="depart_id" class="select w-100" name="departments" required>
+                        <option disabled selected>Choice</option>
+                        {% for val in departments %}
+                            <option value="{{ val.id }}">{{ val.name }}</option>
+                        {% endfor %}                    
+                    </select>
+                    
+                </div>
+                <div class="form-group">
+                    <label>office</label>
+                    <select class="select w-100" name="office" id="id_office" multiple>
+
+                    </select>
+                    
+                </div>
+              <button class="btn btn-danger" id="save" type="submit"> Save </button>
+            </form>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+{% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function(){
+
+      $(".select").select2()
+      $("#depart_id").change(function(){
+        $("#id_office").html('')
+        axios.get('/item/get-office/'+$(this).val()).then((res)=>{
+             var data = res.data.map((value) => {
+                return { id: value.id, text: value.name };
+            });
+            $("#id_office").select2({
+                data:data,
+            })
+        })
+        
+      })
+    })
+  </script>
+{% endblock %}

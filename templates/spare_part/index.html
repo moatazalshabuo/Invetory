@@ -1,0 +1,393 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  Item
+{% endblock %}
+
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Spare Part</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">Spare Part</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Spare Part table</h3>
+            <a href="{% url 'item.index' %}" class="btn btn-warning btn-sm"><i class="fas fa-redo"></i></a>
+          </div>
+          <!-- Light table -->
+          <div class="card-body">
+            <form action="" class="row">
+              <input type="hidden" name="search" value="1" />
+              <div class="col-11 row p-2">
+                <div class="col-md-3">
+                  <label>Service tag</label>
+                  <input type="text" name="service_tag" class="form-control" placeholder="Service tag" value="{{ request.GET.service_tag }}" />
+                </div>
+                <div class="col-md-3">
+                  <label>Store</label>
+                  {% comment %} <input type="text" name="service_tag" class="form-control" placeholder="Catogry" /> {% endcomment %}
+                  <select name="catogry" id="catogry" class="w-100">
+                    <option value="">.......</option>
+                    {% for val in store %}
+                      <option value="{{ val.id }}">{{ val.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>Model</label>
+                  <select name="model" class="w-100" id="model">
+                    <option value="">.......</option>
+                    {% for val in model %}
+                      <option value="{{ val.id }}">{{ val.name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label>status</label>
+                  <select name="status" id="status" class="w-100">
+                    <option value="">.......</option>
+                    <option value="1">Avalibale</option>
+                    <option value="0">Consume</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-1">
+                <button class="btn btn-primary mt-4">search</button>
+              </div>
+            </form>
+            <div style="overflow-x: scroll;min-height: 400px;">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="name">Service Tag</th>
+                    <th scope="col" class="sort" data-sort="budget">Model</th>
+                    <th scope="col" class="sort" data-sort="status">Store</th>
+                    <th scope="col" class="sort" data-sort="completion">Supplier</th>
+                    <th scope="col" class="sort" data-sort="completion">Purchase date</th>
+                    <th scope="col" class="sort" data-sort="completion">status</th>
+                    <th scope="col" class="sort" data-sort="completion">Device</th>
+                    <th scope="col" class="sort" data-sort="completion">control</th>
+                    
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for val in spare_parts %}
+                    <tr>
+                      <th scope="row">
+                        <div class="media align-items-center">
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ val.service_tag }}</span>
+                          </div>
+                        </div>
+                      </th>
+                      <td class="budget">{{ val.model.name }}</td>
+                      
+                      <td class="budget">{{ val.store.name }}</td>
+                    
+                      <td class="budget">{{ val.supplier }}</td>
+                      <td class="budget">{{ val.purchase_date }}</td>
+                      <td>
+                        <span class="badge badge-dot mr-4">
+                          {% if val.status == 1 %}
+                            <i class="bg-success"></i> Avalibale
+                          {% elif val.status == 0 %}
+                            <i class="bg-danger"></i>
+                            <span class="status"></span> Consume
+                          {% endif %}
+                        </span>
+                      </td>
+                      <td>
+                        {{ val.device.service_tag }}
+                      </td>
+                      <td>
+                        {% if val.status %}
+                            <button class="btn btn-primary btn-given" data-id="{{ val.id }}">Given To Device</button>                        
+                        {% endif %}
+                    </td>
+                      {% comment %}
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="completion mr-2">60%</span>
+                          <div>
+                            <div class="progress">
+                              <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      {% endcomment %}
+                      <td class="text-right">
+                        
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-end mb-0">
+                {% if spare_parts.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link"
+                      href="{{ request.get_full_path }}{% if request.GET.search %}
+
+                      {% endif %}page={{ spare_parts.previous_page_number }}"
+                      tabindex="-1">
+                      <i class="fas fa-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                {% endif %}
+                {% for i in range %}
+                  <li class="page-item {% if i == spare_parts.number %}{% endif %}">
+                    <a class="page-link"
+                      href="{{ request.get_full_path }}{% if request.GET.search %}
+
+                      {% endif %}page={{ i }}">
+                      {{ i }}
+                    </a>
+                  </li>
+                {% endfor %}
+                {% if spare_parts.has_next %}
+                  <li class="page-item">
+                    <a class="page-link"
+                      href="{{ request.get_full_path }}{% if request.GET.search %}
+
+                      {% endif %}page={{ spare_parts.next_page_number }}">
+                      <i class="fas fa-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Dark table -->
+  </div>
+
+  <div class="modal fade" id="gevin_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="service_tag"></h5>
+          <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-danger" id="error-gevin"></div>
+          <form id="form-gevin">
+            {% csrf_token %}
+            <div class="form-group">
+              <select name="device" id="device_id" style="width: 100%;">
+                <option disabled selected>Choice ...</option>
+                {% for val in devices %}
+                  <option value="{{ val.id }}">{{ val.service_tag }} - {{ val.modal.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+           <input type="hidden" name="spare_parts" id="spare_part">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+          <button type="button" id="save-gevin" class="btn btn-warning">save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your Django template file, e.g., your_template.html -->
+ 
+
+ 
+{% endblock %}
+
+{% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  {% comment %} <script>
+    $(function () {
+      $('#send-data').click(function (e) {
+        $('#error-form').text('')
+        e.preventDefault()
+        const formData = new FormData(document.getElementById('form-add'))
+        axios.post("{% url 'catogry.store' %}", formData).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            toastr.success(res.data.message)
+            document.getElementById('form-add').reset()
+          } else {
+            var error = res.data.message
+            for (const mssg in error) {
+              for (const index of error[mssg]) {
+                $('#error-form').append(mssg + ' ' + index + '<br>')
+              }
+            }
+          }
+        })
+      })
+      $('.Gevin-btn').click(function () {
+        axios.get('/item/get-device/' + $(this).data('id')).then((res) => {
+          console.log(res)
+          var data = res.data
+          $('#service_tag').text(data.service_tag + ' - ' + data.modal.name + ' - ' + data.catogry.name)
+          $('#device_id').val(data.id)
+        })
+      })
+      $('#save-gevin').click(function () {
+        $('#error-gevin').text('')
+        axios.post('/item/store_data', $('#form-gevin').serialize()).then((res) => {
+          response = res.data
+          if (response.status) {
+            toastr.success(response.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-gevin').text(response.message)
+          }
+        })
+      })
+    
+      $('.close-add').click(function () {
+        location.reload()
+      })
+    
+      $('#form-add').submit(function (e) {
+        e.preventDefault()
+      })
+    
+      $('select').select2()
+    
+      // ====================== Recive Device From Employee ============================
+    
+      $(document).on('click', '.receive-btn', function () {
+        $('#receive_modal').modal('show')
+        $('#id-emp-device').val($(this).data('id'))
+        $('#type_device').val($(this).data('type'))
+      })
+    
+      $('.close-add').click(function () {
+        $('#id-emp-device').val('')
+        $('#type_device').val('')
+      })
+    
+      $('#save-recive').click(function () {
+        $('#error-form').text('')
+        axios.post(`/item/recive/${$('#id-emp-device').val()}/${$('#type_device').val()}`, $('#form-resive').serialize()).then((res) => {
+          var data_recive = res.data
+          if (data_recive.status) {
+            toastr.success(data_recive.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-form').text(data_recive.message)
+          }
+        })
+      })
+      // =================== Send Device To Serviceing ================
+      $(document).on('click', '.Service-btn', function () {
+        $('#send_servirce').modal('show')
+        $('.idempdevice').val($(this).data('id'))
+      })
+    
+      $('.close-add').click(function () {
+        $('.idempdevice').val('')
+      })
+    
+      $('#save-servecing-btn').click(function () {
+        $('#error-form-servcing').text('')
+        axios.post(`/item/send-to-servecing/${$('.idempdevice').val()}`, $('#form-serviceing').serialize()).then((res) => {
+          var data_recive = res.data
+          if (data_recive.status) {
+            toastr.success(data_recive.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-form-servcing').text(data_recive.message)
+          }
+        })
+      })
+    
+      // ===============Recive Device From Serviceing====================
+    
+      $(document).on('click', '.recive-Service-btn', function () {
+        $('#recive_servirce').modal('show')
+        $('.idempdevice').val($(this).data('id'))
+      })
+    
+      $('.close-add').click(function () {
+        $('.idempdevice').val('')
+      })
+    
+      $('#recive-servecing-btn').click(function () {
+        $('#error-recive-servcing').text('')
+        axios.post(`/item/recive-from-servecing/${$('.idempdevice').val()}`, $('#form-serviceing-recive').serialize()).then((res) => {
+          var data_recive = res.data
+          if (data_recive.status) {
+            toastr.success(data_recive.message)
+            setTimeout(() => {
+              location.reload()
+            }, 850)
+          } else {
+            $('#error-recive-servcing').text(data_recive.message)
+          }
+        })
+      })
+    })
+  </script> {% endcomment %}
+  <script>
+    $(function(){
+        $("#device_id").select2({
+            dropdownParent: $('#gevin_modal')
+        })
+        $(".btn-given").click(function(){
+            $("#gevin_modal").modal("show")
+            $('#spare_part').val($(this).data("id"))
+        })
+
+        $("#save-gevin").click(function(){
+            axios.post('/item/spare-part/given/',$("#form-gevin").serialize()).then((res)=>{
+                var data = res.data
+                if(data.status){
+                    toastr.success(data.message)
+                    setInterval(()=>{
+                        location.reload()
+                    },800)
+                }
+            }).catch((res)=>{
+                console.log(res)
+            })
+        })
+    })
+    
+  </script>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+  الاصناف
+{% endblock %}
+{% block content %}
+ <div class="header bg-primary pb-2">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-2">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Catogry</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">catogry</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt-md-6">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Gevin Devices to user</h3>
+          </div>
+          <!-- Light table -->
+          <div class="card-body">
+            <div class="text-danger" id="error-gevin"></div>
+            <form id="form-gevin">
+                {% csrf_token %}
+              <div class="form-group">
+                <label>Employee ID</label>
+                <select id="employee_id" class="select w-100" name="employee">
+                    <option disabled selected>Choice</option>
+                    {% for val in employee %}
+                        <option value="{{ val.id }}">{{ val.zalaf_id }}</option>
+                    {% endfor %}                    
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Servec Tags</label>
+                <select id="Device_id" name="device" class="w-100" multiple>
+                    {% for val in device %}
+                        <option value="{{ val.id }}" {% if val.status != 1 %} disabled {% endif %}>
+                            {{ val.service_tag }} 
+                            <small class="">
+                                {% if val.status != 1 %} {{ val.status_name }} {% endif %}
+                            </small>
+                        </option>
+                    {% endfor %}
+                </select>
+              </div>
+              <button class="btn btn-danger" id="save" type="button"> Save </button>
+            </form>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0" id="name"></h3>
+              </div>
+              <div class="col-4 text-right">
+                <a href="#!" class="btn btn-sm btn-primary" id="id"></a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-items-center table-flush" >
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col" class="sort" data-sort="name">Service Tag</th>
+                      <th scope="col" class="sort" data-sort="budget">Model</th>
+                      <th scope="col" class="sort" data-sort="status">Catogry</th>
+                      <th scope="col" class="sort" data-sort="status">Date Gevin</th>
+                      <th scope="col" class="sort" data-sort="completion">control </th>
+                    </tr>
+                  </thead>
+                  <tbody class="list" id="list-device">
+                    
+                  </tbody>
+                </table>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+{% block javascripts %}
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'layouts/base.html' %} {% block title %}
+  Users
+{% endblock %}
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Users</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">Users</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt-md-6">
+    <div class="row">
+      <div class="col">
+       
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Users table</h3>
+            <a href="{% url 'users.create' %}" class="btn btn-primary my-4">Add User</a>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort" data-sort="name">..</th>
+                  <th scope="col" class="sort" data-sort="budget">User Name</th>
+                  <th scope="col" class="sort" data-sort="completion">Email</th>
+                  <th>Status</th>
+                  <th scope="col">Control</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% for item in users %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">{{ item.username }}</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td class="budget">{{ item.email }}</td>
+                    <td>
+                      <span class="badge badge-dot mr-4">
+                        {% if item.is_active %}
+                          <i class="bg-success"></i> Enabled
+                        {% else %}
+                          <i class="bg-danger"></i> disabled
+                        {% endif %}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                          <a href="{% url 'users.change.status' item.id %}" class="dropdown-item p-2">
+                            {% if item.is_active %}
+                              disabled
+                            {% else %}
+                              Enabled
+                            {% endif %}
+                          </a>
+                          <a class="dropdown-item" href="{% url 'users.edit' item.id %}">edit</a>
+                          <a class="dropdown-item" href="{% url 'set.pass' item.id %}">set Password</a>
+                          <a class="dropdown-item"  href="{% url 'assing.permission' item.id %}">Assing Permission</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-end mb-0">
+                {% if user.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="{% if request.GET.query %}{{ request.GET.query }}{% endif %}page={{ user.previous_page_number }}" tabindex="-1">
+                      <i class="fas fa-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                {% endif %} {% for i in range %}
+                  <li class="page-item {% if i == user.number %}{% endif %}">
+                    <a class="page-link" href="
+                {% if request.GET.query %}{{ request.GET.query }}{% endif %}page={{ i }}">{{ i }}</a>
+                  </li>
+                {% endfor %} {% if user.has_next %}
+                  <li class="page-item">
+                    <a class="page-link" href="{% if request.GET.query %}{{ request.GET.query }}{% endif %}page={{ user.next_page_number }}">
+                      <i class="fas fa-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %} {% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function () {
+     
+    })
+  </script>
+{% endblock %}

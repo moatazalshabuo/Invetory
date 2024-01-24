@@ -1,0 +1,107 @@
+{% extends "layouts/base.html" %} {% block title %} Users {% endblock title %}
+{% block content %}
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Users</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item active"><a href="#">Users</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt-md-6">
+  {% if messages %}
+  <ul class="messages m-auto">
+    {% for message in messages %}
+      <li {% if message.tags == 'error' %} class="alert alert-danger" {% else %} class="alert alert-success" {% endif %}>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  <div class="row">
+    <div class="col-md-6 m-auto">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0 d-flex justify-content-between">
+          <h3 class="mb-0">Add User</h3>
+          {% if message %}
+            <div class="alert alert-success">{{ message }}</div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+            <form action="" method="POST" id="form-create-user">
+                {% csrf_token %}
+            <!-- Light table -->
+            <div class="form-group">
+              <label>Employee ID</label>
+              <select id="employee_id" class="select w-100" name="employee" required>
+                  <option disabled selected>Choice</option>
+                                    
+              </select>
+            </div>
+                {{ form.as_div }}
+            <!-- Card footer -->
+              <div>
+                <label>assing permission<br /> notes if you choice superuser you don't need to set permission </label>
+                <select multiple class="select2 w-100" name="permission">
+                  {% comment %} <option >Choice</option> {% endcomment %}
+                  {% for val in permission %}
+                    <option value="{{ val.id }}">{{ val.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+                <button type="submit" class="btn btn-primary my-3">save</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %} {% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+$('select').select2()
+
+$('#employee_id').select2({
+  tags: true,
+  multiple: false,
+  tokenSeparators: [','],
+  minimumInputLength: 1,
+  minimumResultsForSearch: 10,
+  ajax: {
+    url: "/item/test-mail",
+    dataType: 'json',
+    type: 'GET',
+    data: function (params) {
+      var queryParameters = {
+        name: params.term
+      }
+      return queryParameters
+    },
+    processResults: function (data) {
+      console.log(data)
+      return {
+        results: $.map(data, function (item) {
+          console.log(data)
+          return {
+            text: item.displayName + " " +item.state,
+            id: item.id
+          }
+        })
+      }
+    }
+  }
+})
+
+$("#form-create-user").children('div').addClass("form-group")
+</script>
+{% endblock javascripts %}

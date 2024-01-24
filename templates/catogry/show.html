@@ -1,0 +1,178 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  {{ category.name }}
+{% endblock %}
+{% block content %}
+  <div class="container-fluid mt-6">
+    <div class="row">
+      <div class="col-xl-4 order-xl-2">
+        <div class="card card-profile">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image"></div>
+            </div>
+          </div>
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+            {% comment %} <div class="d-flex justify-content-between">
+              {% if device.status == 1 %}
+                <a href="#" class="btn btn-sm btn-success mr-4">{{ device.status_name }}</a>
+              {% elif device.status == 2 %}
+                <i class="bg-info"></i>
+                <a href="#" class="btn btn-sm btn-info mr-4">{{ device.status_name }}</a>
+              {% elif device.status == 3 %}
+                <a href="#" class="btn btn-sm btn-warning mr-4">{{ device.status_name }}</a>
+              {% elif device.status == 4 %}
+                <a href="#" class="btn btn-sm btn-danger mr-4">{{ device.status_name }}</a>
+              {% endif %}
+            </div> {% endcomment %}
+          </div>
+          <div class="card-body pt-0">
+            <div class="text-center">
+              <h5 class="h3">{{ category.name }}</h5>
+              <div class="h5 font-weight-300">Category</div>
+            </div>
+            <div class="row">
+              <div class="col">
+                {% comment %} 
+                  <div class="card-profile-stats d-flex justify-content-center">
+                    <div>
+                      <span class="heading">Catogry</span>
+                      <span class="description">{{ device.catogry.name }}</span>
+                    </div>
+                    <div>
+                      <span class="heading">Modal</span>
+                      <span class="description">{{ device.modal.name }}</span>
+                    </div>
+                    <div>
+                      <span class="heading">Store</span>
+                      <span class="description">{{ device.store.name }}</span>
+                    </div>
+                  </div> 
+                {% endcomment %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-8 order-xl-1">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Modals</h3>
+              </div>
+              <div class="col-4 text-right">
+                <a href="#!" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#add-office">Add Model</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="name">name</th>
+                    <th>min count to get alert</th>
+                    <th scope="col" class="sort" data-sort="budget">created_at</th>
+                    <th scope="col" class="sort" data-sort="completion"></th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  {% for val in category.modal.all %}
+                    <tr>
+                      <th scope="row">
+                        <span class="badge badge-dot mr-4"><span class="status">{{ val.name }}</span></span>
+                      </th>
+                      <td>{{ val.min_device }}</td>
+                      <td>{{ val.created_at }}</td>
+                      <td>
+                        <a href="{% url 'edit.modal' val.id %}" class="m-1 btn"><i class="fa fa-edit text-warning"></i></a>
+                        <button class=" delete-modal m-1 btn" id="{{ val.id }}"><i class="fa fa-trash text-danger"></i></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="add-office" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addOffice">Add Model</h5>
+          <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-danger" id="error-form-office"></div>
+          <form id="form-add-modal">
+            {% csrf_token %}
+            <div class="m-2">
+              <div>
+                <label for="id_name">Name:</label>
+                <input type="text" name="name" maxlength="50" class="form-control" required="" id="id_name" />
+              </div>
+              <div>
+                <label for="id_catogry">Catogry:</label>
+                <input type="text" value="{{ category.name }}" disabled class="form-control">
+                <input type="hidden" name="catogry" value="{{ category.id }}">
+              </div>
+              <div>
+                <label for="id_min_device">Minimum number of devices for alerting:</label>
+                <input type="number" name="min_device" value="1" class="form-control" required="" id="id_min_device" />
+              </div>
+              <small class="text-danger" id="error-form-addmodal"></small>
+  
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+          <button type="button" id="save-office" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function () {
+      $('#save-office').click(function (e) {
+        e.preventDefault()
+        $("#error-form-addmodal").text('')
+        axios.post("{% url 'modal.create' %}", $("#form-add-modal").serialize()).then((res) => {
+          data = res.data.data
+          location.reload()
+        }).catch((res) => {
+          var error = res.response.data.error;
+          for (const mssg in error) {
+            for (const index of error[mssg]) {
+              $("#error-form-addmodal").append(mssg + " " + index + "<br>");
+            }
+          }
+        })
+      })
+    
+      $('.close-add').click(function () {
+        location.reload()
+      })
+
+      $(document).on('click', '.delete-modal', function () {
+        const id = $(this).attr('id')
+        axios.get(`/item/delete-modal/${id}`).then((res) => {
+          toastr.info(res.data.message)
+          setInterval(()=>{
+              location.reload()
+          },850)
+        })
+      })
+    })
+  </script>
+{% endblock %}

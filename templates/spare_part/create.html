@@ -1,0 +1,385 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+Add Spare Parts
+{% endblock title %}
+
+{% block stylesheets %}
+<style>
+  .coustom-tab {
+    background-color: #f7fafc;
+    color: #000;
+  }
+  .active-tab {
+    background-color: #5e72e4 !important;
+    color: #fff !important;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="header bg-primary pb-2">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-2">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Spare Parts</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Item</a></li>
+              <li class="breadcrumb-item active"><a href="#">Create</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container mt-md-5 pb-5">
+  <!-- Table -->
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-8">
+      {% if message != '' %}
+      <div class="alert alert-danger">{{ message }}</div>
+      {% endif %}
+      <div class="card border-0 overflow-hidden">
+        <div class="row">
+          <button class="btn m-0 col-md-6 text-center p-3 coustom-tab 
+            {% if type == 'one' %}
+              active-tab
+            {% endif %}" data-id="#one">
+            By one
+          </button>
+          <button class="btn m-0 col-md-6 text-center p-3 coustom-tab 
+            {% if type == 'group' %}
+              active-tab
+            {% endif %}" data-id="#all">
+            By Group
+          </button>
+        </div>
+        <div class="card-header bg-transparent pb-5">
+          <div class="text-muted text-center mt-2 mb-3">Add Spare Parts</div>
+          <div class="d-flex justify-content-center">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#AddModel">model <i
+                class="fas fa-plus"></i></button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#AddStore">Stroe <i
+                class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body px-lg-5 py-lg-5 tab-device {% if type != 'one' %}
+          d-none
+        {% endif %}" id="one">
+          <form action="?type=one" method="POST" class="row add-device" enctype="multipart/form-data">
+            <input type="hidden" name="type" value="one">
+            {% csrf_token %}
+            {{ form.as_div }}
+            <section class="col-12 mt-4">
+              {{ formfile }}
+            </section>
+            <p class="text-center">
+              <button type="submit" class="btn btn-primary mt-4">Save</button>
+            </p>
+          </form>
+        </div>
+        <div class="card-body px-lg-5 py-lg-5 tab-device 
+          {% if type != 'group' %}
+          d-none
+        {% endif %}" id="all">
+          <form action="?type=group" method="POST" class="row add-device" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="group">
+            
+            <div class="col-md-6">
+              <label for="id_modal">Modal:</label>
+              <select name="modal" class="form-control id_modal" required="">
+                <option value="" selected="">---------</option>
+                {% for val in modal %}
+                <option value="{{ val.id }}">{{ val.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="id_store">Store:</label>
+              <select name="store" class="form-control id_store" required="">
+                <option value="" selected="">---------</option>
+                {% for val in store %}
+                <option value="{{ val.id }}">{{ val.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="id_supplier">Supplier:</label>
+              <input type="text" name="supplier" maxlength="50" class="form-control" id="id_supplier">
+            </div>
+         
+            <div class="col-md-6">
+              <label for="id_purchase_date">Purchase date:</label>
+              <input type="date" name="purchase_date" class="form-control" id="id_purchase_date">
+            </div>
+            <div class="col-md-6">
+              <label for="id_Warranty_date">Warranty date:</label>
+              <input type="date" name="Warranty_date" class="form-control" id="id_Warranty_date">
+            </div>
+            <div class="col-md-6">
+              <label for="id_purchase_date">Count Device</label>
+              <input type="number" class="form-control" id="count_devices">
+            </div>
+            <section class="col-12 mt-4">
+              <label>A copy of the invoice <span class="text-primary">accept only *.PDF</span></label>
+              <input type="file" name="file" accept="application/pdf" class="form-control">
+            </section>
+            <section class="col-12 row" id="service_tag_group">
+            </section>
+            <p class="text-center">
+              <button type="submit" class="btn btn-primary mt-4" id="save-group" disabled>Save</button>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-4">
+      {% if fail_list %}
+      <div class="alert alert-danger">
+        <ul>
+          {% for val in fail_list %}
+          <li>{{ val.sirvec }} - {{ val.message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if list_service %}
+      <div class="alert alert-success">
+        <ul>
+          {% for val in list_service %}
+          <li>{{ val }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</div>
+<div class="modal fade" id="AddModel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Model</h5>
+        <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times fa-2x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-danger" id="error-form"></div>
+        <form id="form-add-modal">
+          {% csrf_token %}
+          <div class="m-2">
+            <label>Name</label>
+            <div class="input-group mb-3">
+              <input type="text" name="name" class="form-control" required>
+              <div class="input-group-prepend">
+                <button class="input-group-text btn btn-primary" type="submit"
+                  id="inputGroup-sizing-default">save</button>
+              </div>
+            </div>
+            <small class="text-danger" id="error-form-addmodal"></small>
+          </div>
+        </form>
+        <hr />
+        <div class="m-2 p-2" style="overflow-y:scroll;max-height:300px">
+          <ul class="list-group" id="modal-device">
+            {% for val in modal %}
+            <li class="list-group-item d-flex justify-content-between">
+              <span>{{ val.name }}</span>
+              <button class="btn text-danger delete-modal" id="{{ val.id }}">
+                <i class="fa fa-trash"></i>
+              </button>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" id="send-data" class="btn btn-primary">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="AddStore" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Store</h5>
+        <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times fa-2x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-danger" id="error-form"></div>
+        <form id="form-add-store">
+          {% csrf_token %}
+          <div class="m-2">
+            <label>Name</label>
+            <div class="input-group mb-3">
+              <input type="text" name="name" class="form-control" required>
+              <div class="input-group-prepend">
+                <button class="input-group-text btn btn-primary" type="submit"
+                  id="inputGroup-sizing-default">save</button>
+              </div>
+            </div>
+            <small class="text-danger" id="error-form-addstore"></small>
+          </div>
+        </form>
+        <hr />
+        <div class="m-2 p-2" style="overflow-y:scroll;max-height:300px">
+          <ul class="list-group" id="store">
+            {% for val in store %}
+            <li class="list-group-item d-flex justify-content-between">
+              <span>{{ val.name }}</span>
+              <button class="btn text-danger delete-store" id="{{ val.id }}">
+                <i class="fa fa-trash"></i>
+              </button>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">
+          Close
+        </button>
+        <button type="button" id="send-data" class="btn btn-primary">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  $('#form-add-modal').submit(function (e) {
+    e.preventDefault()
+    $("#error-form-addmodal").text('')
+    axios.post("{% url 'modalspare.create' %}", $(this).serialize()).then((res) => {
+      data = res.data.data
+      $('#modal-device').prepend(`<li class="list-group-item d-flex justify-content-between">
+        <span>${data.name}</span>
+        <button class="btn text-danger delete-modal" id="${data.id}">
+          <i class="fa fa-trash"></i>
+        </button>
+      </li>`)
+      $('.id_modal').append(`<option value=${data.id}>${data.name}</option>`)
+      document.getElementById('form-add-modal').reset()
+    }).catch((res) => {
+      var error = res.response.data.error;
+      for (const mssg in error) {
+        for (const index of error[mssg]) {
+          $("#error-form-addmodal").append(mssg + " " + index + "<br>");
+        }
+      }
+    })
+  })
+  $(document).on('click', '.delete-modal', function () {
+    const id = $(this).attr('id')
+    axios.get(`/item/delete-modal-spare/${id}`).then((res) => {
+      $(this).parent().remove()
+      var data = res.data.data
+      $('.id_modal').html('<option value="" selected="">---------</option>')
+      for (let val of data) {
+        $('.id_modal').append(`<option value="${val.id}">${val.name}</option>`)
+      }
+      toastr.success('delete is done')
+    })
+  })
+</script>
+
+<script>
+  $('#form-add-store').submit(function (e) {
+    e.preventDefault()
+    $("#error-form-addstore").text('')
+    axios.post("{% url 'store.create' %}", $(this).serialize()).then((res) => {
+      data = res.data.data
+      $('#store').prepend(`<li class="list-group-item d-flex justify-content-between">
+        <span>${data.name}</span>
+        <button class="btn text-danger delete-store" id='${data.id}'>
+          <i class="fa fa-trash"></i>
+        </button>
+      </li>`)
+      $('.id_store').append(`<option value="${data.id}">${data.name}</option>`)
+      document.getElementById('form-add-store').reset()
+    }).catch((res) => {
+      var error = res.response.data.error;
+      for (const mssg in error) {
+        for (const index of error[mssg]) {
+          $("#error-form-addstore").append(mssg + " " + index + "<br>");
+        }
+      }
+    })
+  })
+  $(document).on('click', '.delete-store', function () {
+    const id = $(this).attr('id')
+    axios.get(`/item/delete-store/${id}`).then((res) => {
+      $(this).parent().remove()
+      var data = res.data.data
+      $('.id_store').html('<option value="" selected="">---------</option>')
+      for (let val of data) {
+        $('.id_store').append(`<option value="${val.id}">${val.name}</option>`)
+      }
+      toastr.success('delete is done')
+    })
+  })
+
+  $(".add-device").children('div').addClass('col-md-6')
+
+  $(".coustom-tab").click(function () {
+    if (!$(this).hasClass('active-tab')) {
+      $('.tab-device').addClass('d-none')
+      $($(this).data('id')).removeClass('d-none')
+      $('.coustom-tab').removeClass('active-tab')
+      $(this).addClass('active-tab')
+    }
+  })
+
+  // count device change 
+
+  $('#count_devices').keyup(function () {
+    var count = $(this).val()
+    console.log(count)
+    if (count > 0) {
+      $('#service_tag_group').html('')
+      $('#save-group').removeAttr('disabled')
+
+      for (let i = 1; i <= count; i++) {
+        $('#service_tag_group').append(`
+          <div class='col-md-4'>
+            <label>Service tag ${i}</lable>
+            <input type='text' name='sevice_tags[]' class='form-control' required>
+          </div>
+          `)
+      }
+    } else {
+      $('#service_tag_group').html('')
+      $('#save-group').attr('disabled', 'disabled')
+    }
+  })
+</script>
+
+
+{% if message != '' %}
+<script>
+  $(function () {
+    toastr.success('{{ message }}')
+  })
+</script>
+{% endif %}
+
+{% endblock javascripts %}

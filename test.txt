@@ -1,0 +1,42 @@
+def sendMail(id):
+    access_token = get_token()
+    id = "55587c62-0bd4-4e01-b860-1e336fa9c091"
+    endpoint = f'https://graph.microsoft.com/v1.0/users/{id}/sendMail'
+    toUserEmail = [{
+        'EmailAddress': {'Address':"muetaz.alsahbu@zallaf.com"},
+        },{
+        'EmailAddress': {'Address':"Aboulqasim.Abdulrahman@zallaf.com"},
+        }]
+    
+    content = """<table width='100%' border='1' cellpadding='5' style='border-collapse:collapse;border:1px solid black;'>
+                    <tbody>
+                        <tr style='background-color:#EFEFEF;'>
+                            <th>Zallaf ID</th>
+                            <th>Employee Name</th>
+                            <th>Department</th>
+                            <th>Device Name</th>
+                            <th>Device ST</th>
+                            <th>Given On</th></tr>
+                        <tr>
+                            <td>ZL0379 </td>
+                            <td>Aboulqasim Abdulrahman </td>
+                            <td>ICT </td>
+                            <td>Lenovo ThinkPad E14 Gen 2 </td>
+                            <td>PF39ZQEQ </td>
+                            <td>1/2/2024 </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    """
+    email_msg = {'Message': {'Subject': "Test Sending Email from Python",
+                             'Body': {'ContentType': 'text/html; charset=UTF-8', 'Content':content },
+                             'ToRecipients': toUserEmail
+                             },
+                 'SaveToSentItems': 'true'}
+    try:
+         r = requests.post(endpoint,
+                      headers={'Authorization': 'Bearer ' + access_token}, json=email_msg)
+    except Exception :
+        return False
+   
+    return True

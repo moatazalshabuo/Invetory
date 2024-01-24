@@ -1,0 +1,275 @@
+{% extends 'layouts/base.html' %}
+{% block title %}
+  Departments
+{% endblock %}
+{% block content %}
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Departments</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item">
+                  <a href="#"><i class="fas fa-home"></i></a>
+                </li>
+                <li class="breadcrumb-item active">
+                  <a href="#">department</a>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Page content -->
+  <div class="container-fluid mt-md-6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+                <li {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+          <div class="card-header border-0 d-flex justify-content-between">
+            <h3 class="mb-0">Department table</h3>
+            <form action="{% url 'department.index' %}" method="GET" class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
+              <div class="form-group mb-0">
+                <div class="input-group input-group-alternative input-group-merge">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  </div>
+                  <input class="form-control" name="query" placeholder="Search" type="text" />
+                </div>
+              </div>
+              <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close"><span aria-hidden="true">×</span></button>
+            </form>
+            <button type="button" data-toggle="modal" data-target="#AddCat" class="btn btn-primary my-4">Add Department</button>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort" data-sort="name">..</th>
+                  <th scope="col" class="sort" data-sort="budget">Name</th>
+                  <th scope="col" class="sort" data-sort="completion">offices</th>
+                  <th scope="col">Control</th>
+                </tr>
+              </thead>
+              <tbody class="list">
+                {% for item in department %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <th scope="row">
+                      <a href="{% url 'department.show' item.id %}">
+                        <div class="media align-items-center">
+                          <div class="media-body">
+                            <span class="name mb-0 text-sm">{{ item.name }}</span>
+                          </div>
+                        </div>
+                      </a>
+                    </th>
+                    <td class="budget">
+                      <button class="btn btn-primary office-data" data-id="{{ item.id }}">offices</button>
+                    </td>
+                    <td class="text-center">
+                      <div class="dropdown">
+                        <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-v"></i></a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                          <button data-toggle="modal" data-target="#delete{{ item.id }}" class="dropdown-item text-danger" href="#">Delete <i class="fa fa-trash"></i></button>
+                          <a href="{% url 'department.edit' item.id %}" class="dropdown-item"> edit</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <div class="modal fade" id="delete{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Warning</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body">Are you sure from delete</div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <a href="{% url 'department.delete' item.id %}" class="btn btn-danger">Yes Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <nav aria-label="...">
+              <ul class="pagination justify-content-end mb-0">
+                {% if department.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link"
+                      href="{% if request.GET.query %}
+                        {{ request.GET.query }}
+                      {% endif %}page={{ department.previous_page_number }}"
+                      tabindex="-1">
+                      <i class="fas fa-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                {% endif %} {% for i in range %}
+                  <li class="page-item {% if i == department.number %}{% endif %}">
+                    <a class="page-link"
+                      href="
+                {% if request.GET.query %}
+                        {{ request.GET.query }}
+                      {% endif %}page={{ i }}">
+                      {{ i }}
+                    </a>
+                  </li>
+                {% endfor %} {% if department.has_next %}
+                  <li class="page-item">
+                    <a class="page-link"
+                      href="{% if request.GET.query %}
+                        {{ request.GET.query }}
+                      {% endif %}page={{ department.next_page_number }}">
+                      <i class="fas fa-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="AddCat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add department</h5>
+            <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-danger" id="error-form"></div>
+            <form id="form-add">
+              {% csrf_token %} {% for field in form %}
+                <div class="mb-3">
+                  <label for="{{ field.id_for_label }}">
+                    {{ field.label }} {% if field.is_required %}
+                      <span class="text-danger">*</span>
+                    {% endif %}
+                  </label>
+                  {{ field }}
+                </div>
+              {% endfor %}
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+            <button type="button" id="send-data" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="add-office" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addOffice">Add office</h5>
+            <button type="button" class="btn close-add" data-dismiss="modal" aria-label="Close"><i class="fas fa-times fa-2x"></i></button>
+          </div>
+          <div class="modal-body">
+            <div class="text-danger" id="error-form-office"></div>
+            <form id="form-add-office">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="">Department :</label>
+                <input type="text" disabled id="department_id" class="form-control" />
+                <input type="hidden" id="department_id_val" name="department" />
+              </div>
+              <div class="mb-3">
+                <label for="">Office Name :</label>
+                <input type="text" name="name" class="form-control" id="name_id" required />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
+            <button type="button" id="save-office" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %} {% block javascripts %}
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    $(function () {
+      $('#send-data').click(function (e) {
+        $('#error-form').text('')
+        e.preventDefault()
+        const formData = new FormData(document.getElementById('form-add'))
+        axios.post("{% url 'department.store' %}", formData).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            toastr.success(res.data.message)
+            document.getElementById('form-add').reset()
+          } else {
+            var error = res.data.message
+            for (const mssg in error) {
+              for (const index of error[mssg]) {
+                $('#error-form').append(mssg + ' ' + index + '<br>')
+              }
+            }
+          }
+        })
+      })
+    
+      $('.close-add').click(function () {
+        location.reload()
+      })
+    
+      $('#form-add').submit(function (e) {
+        e.preventDefault()
+      })
+    
+      $('.office-data').click(function () {
+        var id = $(this).data('id')
+        axios.get('/item/depatment/' + id).then((res) => {
+          var data = res.data
+          $('#department_id').val(data.name)
+          $('#department_id_val').val(data.id)
+          $('#add-office').modal('show')
+        })
+      })
+    
+      $('#save-office').click(function () {
+        $('#error-form-office').text('')
+        axios.post('/item/office-store', $('#form-add-office').serialize()).then((res) => {
+          console.log(res)
+          if (res.data.status) {
+            toastr.success(res.data.message)
+            $('#name_id').val('')
+          } else {
+            var error = res.data.message
+            for (const mssg in error) {
+              for (const index of error[mssg]) {
+                $('#error-form-office').append(mssg + ' ' + index + '<br>')
+              }
+            }
+          }
+        })
+      })
+    })
+  </script>
+{% endblock %}
