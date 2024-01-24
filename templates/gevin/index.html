@@ -8,14 +8,14 @@
       <div class="header-body">
         <div class="row align-items-center py-2">
           <div class="col-lg-6 col-7">
-            <h6 class="h2 text-white d-inline-block mb-0">Catogry</h6>
+            <h6 class="h2 text-white d-inline-block mb-0">Category</h6>
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item">
                   <a href="#"><i class="fas fa-home"></i></a>
                 </li>
                 <li class="breadcrumb-item active">
-                  <a href="#">catogry</a>
+                  <a href="#">category</a>
                 </li>
               </ol>
             </nav>
@@ -322,7 +322,7 @@
       getDevices()
       function get_data(id){
         $("#error-gevin").text()
-        axios.get('/item/emp_data/'+id).then((res)=>{
+        axios.get('/item/emp_data/'+id+'/').then((res)=>{
             var emp = res.data.employee 
             var emp_device = res.data.emoloyee_device
             $('#id').text(emp.state)
@@ -352,7 +352,7 @@
       $("#save").click(function(){
         $(".overlay").removeClass("d-none")
           $('#error-gevin').text('')
-          axios.post('/item/store_data',$("#form-gevin").serialize()).then((res)=>{
+          axios.post('/item/store_data/',$("#form-gevin").serialize()).then((res)=>{
               response = res.data
             
               if(response.status){
@@ -374,7 +374,7 @@
       $("#save-recive").click(function(){
         $("#error-form").text('')
         $(".overlay").removeClass("d-none")
-        axios.post(`/item/recive/${$("#id-emp-device").val()}/Personal`,$("#form-resive").serialize()).then((res)=>{
+        axios.post(`/item/recive/${$("#id-emp-device").val()}/Personal/`,$("#form-resive").serialize()).then((res)=>{
           var data_recive = res.data
           if(data_recive.status){
             get_data($('#employee_id').val())
@@ -394,7 +394,7 @@
         minimumInputLength: 1,
         minimumResultsForSearch: 10,
         ajax: {
-          url: "/item/test-mail",
+          url: "/item/test-mail/",
           dataType: 'json',
           type: 'GET',
           data: function (params) {

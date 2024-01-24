@@ -166,7 +166,7 @@
 
       $(document).on('click', '.delete-modal', function () {
         const id = $(this).attr('id')
-        axios.get(`/item/delete-modal/${id}`).then((res) => {
+        axios.get(`/item/delete-modal/${id}/`).then((res) => {
           toastr.info(res.data.message)
           setInterval(()=>{
               location.reload()

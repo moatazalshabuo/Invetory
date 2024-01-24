@@ -139,7 +139,7 @@
     $(function(){
         $('#save-office').click(function () {
             $('#error-form-office').text('')
-            axios.post('/item/office-store', $('#form-add-office').serialize()).then((res) => {
+            axios.post('/item/office-store/', $('#form-add-office').serialize()).then((res) => {
               console.log(res)
               if (res.data.status) {
                 toastr.success(res.data.message)

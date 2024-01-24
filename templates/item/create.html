@@ -296,7 +296,7 @@ Add Device
 
   $(document).on('click', '.delete-modal', function () {
     const id = $(this).attr('id')
-    axios.get(`/item/delete-modal/${id}`).then((res) => {
+    axios.get(`/item/delete-modal/${id}/`).then((res) => {
       $(this).parent().remove()
       var data = res.data.data
       $('.id_modal').html('<option value="" selected="">---------</option>')
@@ -333,7 +333,7 @@ Add Device
   })
   $(document).on('click', '.delete-store', function () {
     const id = $(this).attr('id')
-    axios.get(`/item/delete-store/${id}`).then((res) => {
+    axios.get(`/item/delete-store/${id}/`).then((res) => {
       $(this).parent().remove()
       var data = res.data.data
       $('.id_store').html('<option value="" selected="">---------</option>')
@@ -345,7 +345,6 @@ Add Device
   })
 
   $(".add-device").children('div').addClass('col-md-6')
-
   $(".coustom-tab").click(function () {
     if (!$(this).hasClass('active-tab')) {
       $('.tab-device').addClass('d-none')
@@ -354,9 +353,7 @@ Add Device
       $(this).addClass('active-tab')
     }
   })
-
   // count device change 
-
   $('#count_devices').keyup(function () {
     var count = $(this).val()
     console.log(count)
@@ -376,11 +373,9 @@ Add Device
       $('#service_tag_group').html('')
       $('#save-group').attr('disabled', 'disabled')
     }
-
   })
-
   $(".id_catogry").change(function(){
-    axios("/item/modal/"+$(this).val()).then((response)=>{
+    axios("/item/modal/"+$(this).val()+"/").then((response)=>{
       data = []
      response.data.map((res)=>{
       data.push({text:res.name,id:res.id})
@@ -392,7 +387,6 @@ Add Device
      console.log(data)
     })
   })
-
 </script>
 
 

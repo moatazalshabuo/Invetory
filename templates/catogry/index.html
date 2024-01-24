@@ -32,7 +32,9 @@
           {% if messages %}
             <ul class="messages">
               {% for message in messages %}
-                <li class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">{{ message }}</li>
+                <li class="alert {% if message.tags == 'error' %}
+
+                  {% endif %}">{{ message }}</li>
               {% endfor %}
             </ul>
           {% endif %}
@@ -120,8 +122,8 @@
                   <div class="card-body">
                     <i class="fas fa-layer-group text-primary" style="font-size: 7rem;"></i>
                     <p class="card-text m-3">
-                      <span class="badge  p-2 text-dark shadow"> count Devices :  {{ forloop.counter }}</span>
-                      <span class="badge  p-2 text-dark shadow">count models : {{ item.modal.count }}</span>
+                      <span class="badge p-2 text-dark shadow">count Devices : {{ forloop.counter }}</span>
+                      <span class="badge p-2 text-dark shadow">count models : {{ item.modal.count }}</span>
                     </p>
                     <a href="{% url 'categry.show' item.id %}" class="btn btn-primary">Show</a>
                   </div>
@@ -174,7 +176,6 @@
         </div>
       </div>
     </div>
-
     <div class="modal fade" id="AddCat" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -199,7 +200,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary close-add" data-dismiss="modal">Close</button>
-            <button type="button" id="send-data" class="btn btn-primary">Send message</button>
+            <button type="button" id="send-data" class="btn btn-primary">Save</button>
           </div>
         </div>
       </div>
@@ -228,11 +229,9 @@
           }
         })
       })
-    
       $('.close-add').click(function () {
         location.reload()
       })
-    
       $('#form-add').submit(function (e) {
         e.preventDefault()
       })

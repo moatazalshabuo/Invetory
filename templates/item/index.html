@@ -396,7 +396,7 @@
       })
       $('#save-gevin').click(function () {
         $('#error-gevin').text('')
-        axios.post('/item/store_data', $('#form-gevin').serialize()).then((res) => {
+        axios.post('/item/store_data/', $('#form-gevin').serialize()).then((res) => {
           response = res.data
           if (response.status) {
             toastr.success(response.message)
@@ -434,7 +434,7 @@
     
       $('#save-recive').click(function () {
         $('#error-form').text('')
-        axios.post(`/item/recive/${$('#id-emp-device').val()}/${$('#type_device').val()}`, $('#form-resive').serialize()).then((res) => {
+        axios.post(`/item/recive/${$('#id-emp-device').val()}/${$('#type_device').val()}/`, $('#form-resive').serialize()).then((res) => {
           var data_recive = res.data
           if (data_recive.status) {
             toastr.success(data_recive.message)
@@ -458,7 +458,7 @@
     
       $('#save-servecing-btn').click(function () {
         $('#error-form-servcing').text('')
-        axios.post(`/item/send-to-servecing/${$('.idempdevice').val()}`, $('#form-serviceing').serialize()).then((res) => {
+        axios.post(`/item/send-to-servecing/${$('.idempdevice').val()}/`, $('#form-serviceing').serialize()).then((res) => {
           var data_recive = res.data
           if (data_recive.status) {
             toastr.success(data_recive.message)
@@ -484,7 +484,7 @@
     
       $('#recive-servecing-btn').click(function () {
         $('#error-recive-servcing').text('')
-        axios.post(`/item/recive-from-servecing/${$('.idempdevice').val()}`, $('#form-serviceing-recive').serialize()).then((res) => {
+        axios.post(`/item/recive-from-servecing/${$('.idempdevice').val()}/`, $('#form-serviceing-recive').serialize()).then((res) => {
           var data_recive = res.data
           if (data_recive.status) {
             toastr.success(data_recive.message)

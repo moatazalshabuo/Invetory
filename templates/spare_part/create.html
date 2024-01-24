@@ -290,7 +290,7 @@ Add Spare Parts
   })
   $(document).on('click', '.delete-modal', function () {
     const id = $(this).attr('id')
-    axios.get(`/item/delete-modal-spare/${id}`).then((res) => {
+    axios.get(`/item/delete-modal-spare/${id}/`).then((res) => {
       $(this).parent().remove()
       var data = res.data.data
       $('.id_modal').html('<option value="" selected="">---------</option>')
